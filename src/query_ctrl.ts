@@ -36,7 +36,7 @@ export class CompareQueriesQueryCtrl extends QueryCtrl {
     if (this.target.timeShifts && this.target.timeShifts.length <= 1) {
       return;
     }
-    var index = _.indexOf(this.target.timeShifts, timeShift);
+    let index = _.indexOf(this.target.timeShifts, timeShift);
     this.target.timeShifts.splice(index, 1);
     this.refreshTimeShifts();
   }

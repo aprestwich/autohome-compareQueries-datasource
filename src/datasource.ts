@@ -29,20 +29,20 @@ export class CompareQueriesDatasource {
 
   // Called once per panel (graph)
   query(options) {
-    var _this = this;
-    var sets = _.groupBy(options.targets, function(ds) {
+    let _this = this;
+    let sets = _.groupBy(options.targets, function(ds) {
       // Trying to maintain compatibility with grafana lower then 8.3.x
       if (ds.datasource.uid === undefined) {
         return ds.datasource;
       }
       return ds.datasource.uid;
     });
-    var querys = _.groupBy(options.targets, 'refId');
-    var promises: any[] = [];
+    let querys = _.groupBy(options.targets, 'refId');
+    let promises: any[] = [];
     _.forEach(sets, function(targets, dsName) {
-      var opt = _.cloneDeep(options);
+      let opt = _.cloneDeep(options);
 
-      var promise = _this.datasourceSrv.get(dsName).then(function(ds) {
+      let promise = _this.datasourceSrv.get(dsName).then(function(ds) {
         if (ds.meta.id === _this.meta.id) {
           return _this._compareQuery(options, targets, querys, _this);
         } else {
@@ -58,7 +58,7 @@ export class CompareQueriesDatasource {
         data: _.flatten(
           _.filter(
             _.map(results, function(result) {
-              var data = result.data;
+              let data = result.data;
               if (data) {
                 data = _.filter(result.data, function(datum) {
                   return datum.hide !== true;
@@ -77,25 +77,25 @@ export class CompareQueriesDatasource {
   }
 
   _compareQuery(options, targets, querys, _this) {
-    var comparePromises: any[] = [];
+    let comparePromises: any[] = [];
     //console.log('_compareQuery targets', targets)
     _.forEach(targets, function(target) {
-      var query = target.query;
+      let query = target.query;
       if (query === null || query === '' || querys[query] === null) {
         return;
       }
-      var queryObj = _.cloneDeep(querys[query][0]);
+      let queryObj = _.cloneDeep(querys[query][0]);
       queryObj.hide = false;
       if (queryObj) {
-        var compareDsName = queryObj.datasource;
+        let compareDsName = queryObj.datasource;
         if (target.timeShifts && target.timeShifts.length > 0) {
           _.forEach(target.timeShifts, function(timeShift) {
-            var timeShiftValue;
-            var timeShiftAlias;
-            var aliasType = timeShift.aliasType || 'suffix';
-            var delimiter = timeShift.delimiter || '_';
+            let timeShiftValue;
+            let timeShiftAlias;
+            let aliasType = timeShift.aliasType || 'suffix';
+            let delimiter = timeShift.delimiter || '_';
 
-            var comparePromise = _this.datasourceSrv
+            let comparePromise = _this.datasourceSrv
               .get(compareDsName)
               .then(function(compareDs) {
                 if (compareDs.meta.id === _this.meta.id) {
@@ -120,11 +120,11 @@ export class CompareQueriesDatasource {
                 compareOptions.targets = [queryObj];
                 compareOptions.requestId = compareOptions.requestId + '_' + timeShiftValue;
 
-                var compareResult = compareDs.query(compareOptions);
+                let compareResult = compareDs.query(compareOptions);
                 return typeof compareResult.toPromise === 'function' ? compareResult.toPromise() : compareResult;
               })
               .then(function(compareResult) {
-                var data = compareResult.data;
+                let data = compareResult.data;
                 data.forEach(function(line) {
                   if (line.target) {
                     // if old time series format
@@ -222,7 +222,7 @@ export class CompareQueriesDatasource {
         data: _.flatten(
           _.filter(
             _.map(results, function(result) {
-              var data = result.data;
+              let data = result.data;
               if (data) {
                 data = _.filter(result.data, function(datum) {
                   return datum.hide !== true;
@@ -256,8 +256,8 @@ export class CompareQueriesDatasource {
     if (!timeShiftObj) {
       return;
     }
-    var num = 0 - timeShiftObj.num;
-    var unit = timeShiftObj.unit;
+    let num = 0 - timeShiftObj.num;
+    let unit = timeShiftObj.unit;
     if (!_.includes(this.units, unit)) {
       return undefined;
     } else {
@@ -267,9 +267,9 @@ export class CompareQueriesDatasource {
     }
   }
   parseTimeShift(timeShift) {
-    var dateTime = timeShift;
-    var len = timeShift.length;
-    var i = 0;
+    let dateTime = timeShift;
+    let len = timeShift.length;
+    let i = 0;
 
     while (i < len && !isNaN(dateTime.charAt(i))) {
       i++;
@@ -277,8 +277,8 @@ export class CompareQueriesDatasource {
         return undefined;
       }
     }
-    var num = parseInt(dateTime.substring(0, i), 10);
-    var unit = dateTime.charAt(i);
+    let num = parseInt(dateTime.substring(0, i), 10);
+    let unit = dateTime.charAt(i);
     return {
       num: num,
       unit: unit,
@@ -290,8 +290,8 @@ export class CompareQueriesDatasource {
     if (!timeShiftObj) {
       return;
     }
-    var num = 0 - timeShiftObj.num;
-    var unit = timeShiftObj.unit;
+    let num = 0 - timeShiftObj.num;
+    let unit = timeShiftObj.unit;
 
     if (!_.includes(this.units, unit)) {
       return undefined;
